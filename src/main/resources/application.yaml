@@ -5,8 +5,9 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
   datasource:
-    # Full JDBC URL (local file / tools), or compose from host/port/db (Render Blueprint).
-    url: ${DATABASE_URL:jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:expense}?sslmode=${DATABASE_SSL_MODE:disable}}
+    # JDBC_DATABASE_URL: full jdbc URL (optional). Else DATABASE_URL postgresql://... (Render) via PostgresDatabaseUrlEnvironmentPostProcessor.
+    # Else host/port/name (Blueprint split vars or manual).
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:expense}?sslmode=${DATABASE_SSL_MODE:disable}}
     username: ${DATABASE_USER:expense}
     password: ${DATABASE_PASSWORD:expense}
   jpa:

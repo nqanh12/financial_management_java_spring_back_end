@@ -50,7 +50,9 @@ The repository must not contain real OAuth client secrets or production JWT keys
 
 | Variable | Purpose |
 |----------|---------|
-| `DATABASE_URL`, `DATABASE_USER`, `DATABASE_PASSWORD` | JDBC: either set full `DATABASE_URL`, or set `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USER`, `DATABASE_PASSWORD` (used by `render.yaml`) |
+| `JDBC_DATABASE_URL` | (Optional) Full JDBC URL; when set, overrides other DB URL rules below |
+| `DATABASE_URL` | Render/Heroku style `postgresql://user:pass@host:port/db` → mapped to JDBC + datasource user/pass at startup |
+| `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USER`, `DATABASE_PASSWORD` | Compose JDBC when `DATABASE_URL` / `JDBC_DATABASE_URL` are unset (local or manual Render env) |
 | `DATABASE_SSL_MODE` | JDBC `sslmode` query param (e.g. `require` on Render Postgres, `disable` locally — default in `application.yaml`) |
 | `REDIS_URL` | Redis connection string (Render Key Value); local default `redis://localhost:6379` |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth2 |
