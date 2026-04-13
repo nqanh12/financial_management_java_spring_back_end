@@ -50,10 +50,11 @@ The repository must not contain real OAuth client secrets or production JWT keys
 
 | Variable | Purpose |
 |----------|---------|
-| `DATABASE_URL`, `DATABASE_USER`, `DATABASE_PASSWORD` | JDBC (defaults target local Postgres) |
-| `REDIS_HOST`, `REDIS_PORT` | Redis (used for rate limiting; if Redis is unavailable the limiter is skipped and a warning is logged) |
+| `DATABASE_URL`, `DATABASE_USER`, `DATABASE_PASSWORD` | JDBC: either set full `DATABASE_URL`, or set `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USER`, `DATABASE_PASSWORD` (used by `render.yaml`) |
+| `DATABASE_SSL_MODE` | JDBC `sslmode` query param (e.g. `require` on Render Postgres, `disable` locally — default in `application.yaml`) |
+| `REDIS_URL` | Redis connection string (Render Key Value); local default `redis://localhost:6379` |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth2 |
-| `JWT_SECRET` | Base64-encoded key for HS256 (use a strong secret in production) |
+| `JWT_SECRET` | HS256 signing material: Base64/Base64URL or any strong string (hashed to 32 bytes internally) |
 | `JWT_EXPIRATION_SECONDS` | JWT lifetime (default 86400) |
 | `OAUTH2_FRONTEND_REDIRECT_URL` | After Google login, user is redirected here with `accessToken` and `expiresIn` query params |
 | `APP_CORS_ORIGINS` | Allowed browser origins (comma-separated list in `application.yaml` as a list) |
@@ -71,6 +72,15 @@ The repository must not contain real OAuth client secrets or production JWT keys
 
 Swagger UI: `http://localhost:8080/swagger-ui.html`  
 OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+
+## Deploy on Render
+
+1. Push this repo to GitHub (already contains [`render.yaml`](render.yaml)).
+2. In [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint** → connect the repo → **Apply** (creates Postgres, Key Value Redis, and Docker web service `expense-api`).
+3. Open the web service → **Environment** → set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `OAUTH2_FRONTEND_REDIRECT_URL` (URL frontend sau login), and `APP_CORS_ORIGINS` (origins frontend, comma-separated).
+4. In [Google Cloud Console](https://console.cloud.google.com/) → OAuth client → **Authorized redirect URIs**, add  
+   `https://<your-render-service-name>.onrender.com/login/oauth2/code/google`.
+5. After deploy, check `https://<your-service>.onrender.com/actuator/health` and Swagger at `/swagger-ui.html`.
 
 ## Docker Compose (app + Postgres + Redis)
 

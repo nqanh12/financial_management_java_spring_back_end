@@ -1,0 +1,66 @@
+# Render Blueprint: https://render.com/docs/infrastructure-as-code
+# Sau khi push, vào Render Dashboard → New → Blueprint → chọn repo này → Apply.
+# Bổ sung thủ công trong Environment (sync: false): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+# OAUTH2_FRONTEND_REDIRECT_URL, APP_CORS_ORIGINS. Thêm redirect URI Google:
+#   https://<tên-web-service>.onrender.com/login/oauth2/code/google
+
+databases:
+  - name: expense-db
+    databaseName: expense
+    user: expense
+    plan: free
+    postgresMajorVersion: "16"
+
+services:
+  - type: keyvalue
+    name: expense-redis
+    plan: free
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru
+
+  - type: web
+    name: expense-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_SSL_MODE
+        value: require
+      - key: DATABASE_HOST
+        fromDatabase:
+          name: expense-db
+          property: host
+      - key: DATABASE_PORT
+        fromDatabase:
+          name: expense-db
+          property: port
+      - key: DATABASE_NAME
+        fromDatabase:
+          name: expense-db
+          property: database
+      - key: DATABASE_USER
+        fromDatabase:
+          name: expense-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: expense-db
+          property: password
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: expense-redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: OAUTH2_FRONTEND_REDIRECT_URL
+        sync: false
+      - key: APP_CORS_ORIGINS
+        sync: false

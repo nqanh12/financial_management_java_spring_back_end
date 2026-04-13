@@ -5,7 +5,8 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/expense}
+    # Full JDBC URL (local file / tools), or compose from host/port/db (Render Blueprint).
+    url: ${DATABASE_URL:jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:expense}?sslmode=${DATABASE_SSL_MODE:disable}}
     username: ${DATABASE_USER:expense}
     password: ${DATABASE_PASSWORD:expense}
   jpa:
@@ -21,8 +22,8 @@ spring:
     locations: classpath:db/migration
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
+      # Render Key Value: set REDIS_URL from connection string; local default without password.
+      url: ${REDIS_URL:redis://localhost:6379}
   security:
     oauth2:
       client:
