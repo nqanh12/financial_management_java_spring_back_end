@@ -15,6 +15,9 @@ RUN apt-get update \
 COPY --from=build /app/target/*.jar app.jar
 USER spring:spring
 EXPOSE 8080
+# Render / production image: avoid defaulting to profile "local" from application.yaml.
+# docker-compose overrides this with SPRING_PROFILES_ACTIVE=docker.
+ENV SPRING_PROFILES_ACTIVE=prod
 ENV JAVA_OPTS=""
 HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
   CMD sh -c 'wget -qO- "http://127.0.0.1:${PORT:-8080}/actuator/health" || exit 1'

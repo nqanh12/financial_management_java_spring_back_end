@@ -54,7 +54,8 @@ logging:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:}
+    # JWT_SECRET (Render) or APP_JWT_SECRET (Spring relaxed binding alias)
+    secret: ${JWT_SECRET:${APP_JWT_SECRET:}}
     expiration-seconds: ${JWT_EXPIRATION_SECONDS:86400}
   oauth2:
     frontend-redirect-url: ${OAUTH2_FRONTEND_REDIRECT_URL:http://localhost:3000/oauth2/callback}
