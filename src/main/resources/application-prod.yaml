@@ -1,0 +1,10 @@
+# Production: set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET, DATABASE_*, etc. via environment.
+# Secrets are validated at startup by ProdRequiredSecretsEnvironmentPostProcessor.
+# Trust X-Forwarded-* only from your edge proxy (see server.forward-headers-strategy in application.yaml).
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  # Optional: bind actuator to another port in production, e.g. management.server.port: 8081

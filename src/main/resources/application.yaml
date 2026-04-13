@@ -1,0 +1,73 @@
+# Local overrides: copy application-local.example.yaml to application-local.yaml (gitignored).
+spring:
+  application:
+    name: expense-management
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/expense}
+    username: ${DATABASE_USER:expense}
+    password: ${DATABASE_PASSWORD:expense}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:}
+            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            scope: openid, email, profile
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+
+server:
+  # Render provides PORT; fall back to 8080 locally.
+  port: ${PORT:8080}
+  # Use only behind a trusted reverse proxy that strips/forges forwarded headers.
+  forward-headers-strategy: framework
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  pattern:
+    level: "%5p [trace=%X{traceId:-},span=%X{spanId:-}] %logger : %m%n"
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:}
+    expiration-seconds: ${JWT_EXPIRATION_SECONDS:86400}
+  oauth2:
+    frontend-redirect-url: ${OAUTH2_FRONTEND_REDIRECT_URL:http://localhost:3000/oauth2/callback}
+    exchange-ttl: ${OAUTH2_EXCHANGE_TTL:PT2M}
+  cors:
+    allowed-origins: ${APP_CORS_ORIGINS:http://localhost:3000}
+  cache:
+    reporting-ttl: PT10M
+  rate-limit:
+    requests-per-minute: ${APP_RATE_LIMIT_PER_MINUTE:120}
+    window-seconds: ${APP_RATE_LIMIT_WINDOW_SECONDS:60}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

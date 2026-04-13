@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/expense
+    username: expense
+    password: expense
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ORIGINS:http://localhost:3000}

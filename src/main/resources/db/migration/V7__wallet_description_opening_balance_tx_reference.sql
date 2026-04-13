@@ -1,0 +1,8 @@
+ALTER TABLE wallets
+    ADD COLUMN IF NOT EXISTS description VARCHAR(500);
+
+ALTER TABLE wallets
+    ADD COLUMN IF NOT EXISTS opening_balance NUMERIC(19, 4) NOT NULL DEFAULT 0;
+
+ALTER TABLE transactions
+    ADD COLUMN IF NOT EXISTS external_reference VARCHAR(128);

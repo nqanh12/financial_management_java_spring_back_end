@@ -1,0 +1,24 @@
+# Integration tests use Testcontainers PostgreSQL (see PostgresIntegrationTest) + Flyway via DynamicPropertySource.
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+  data:
+    redis:
+      repositories:
+        enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-client
+            client-secret: test-secret
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+
+app:
+  jwt:
+    secret: test-jwt-secret
