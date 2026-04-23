@@ -59,6 +59,7 @@ app:
     secret: ${JWT_SECRET:${APP_JWT_SECRET:}}
     expiration-seconds: ${JWT_EXPIRATION_SECONDS:86400}
   oauth2:
+    # After Google login (handled by backend), redirect browser back to frontend with ?oauth_code=...
     frontend-redirect-url: ${OAUTH2_FRONTEND_REDIRECT_URL:http://localhost:3000/oauth2/callback}
     exchange-ttl: ${OAUTH2_EXCHANGE_TTL:PT2M}
   cors:
